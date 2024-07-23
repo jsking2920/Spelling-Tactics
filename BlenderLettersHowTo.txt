@@ -1,0 +1,24 @@
+Blender text to good unity ready FBX pipeline
+
+- New Blender file
+- Delete everything in blender
+- Shift + A, add text object
+- Use tab to edit text
+- Object properties -> rotate x 90 degrees
+- Text -> Geometry -> Extrude 0.1m
+- Text -> Geometry -> Bevel (round 0.01m or profile 0.02m)
+- Text -> Paragraph -> Center alignment
+- object -> apply -> Visual Geometry to Mesh (Alt + ;)
+- (On mesh, not text) object Apply Rotation (Ctrl + ;)
+- Export FBX (Ctrl ")
+	- Selected Objects: true (select mesh object)
+	- Scale = 1.00
+	- Apply Scalings: FBX All
+	- [-Z Forward]
+	- [Y Up]
+	- Apply Unit: true
+	- Use Space Transform: True
+	- Apply Transform: True
+- Unity -> export settings for new fbx -> Bake Axis Conversion: True
+
+- Change text with tab and repeat using shortcuts and import setting preset
