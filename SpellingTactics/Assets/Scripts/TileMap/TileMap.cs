@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using UnityEngine;
 using static Unity.VisualScripting.Member;
@@ -123,14 +124,21 @@ public class TileMap : MonoBehaviour
     #region Pathfinding
     // Simple, unoptimized Dijkstra's pathfinding
     // TODO: Convert to A*
-    public List<Tile> FindPath(Tile source, Tile target)
+    public List<Tile> FindPath(Unit unit, Tile target)
     {
+        if (unit == null || target == null) return null;
+        if (tiles[unit.tileX, unit.tileY] == target) return null;
+        if (unit.movement == 0) return null;
+        if (!tileTypes[target.tileType].isTraversable || target.occupyingUnit != null) return null;
+
+        Tile source = tiles[unit.tileX, unit.tileY];
+
         Dictionary<Tile, float> dist = new Dictionary<Tile, float>(); // Distance to each tile from source
         Dictionary<Tile, Tile> prev = new Dictionary<Tile, Tile>(); // Used to trace current path being tested
 
         List<Tile> unvisited = new List<Tile>();
 
-        // Initially consider all tiles univisited and infinitely far away
+        // TODO: I think we can narrow down what tiles we look at here (in range, not occupied, traversable, etc)
         foreach (Tile tile in tiles)
         {
             if (tile != null)
@@ -161,21 +169,25 @@ public class TileMap : MonoBehaviour
             unvisited.Remove(closestTile);
 
             // Look at each of that tiles neighbors 
+            // TODO: Can we narrow down which tiles we actually consider here?
             foreach (Tile tile in closestTile.neighbors)
             {
-                // Using manhattan distance because we're only allowing orthogonal movement. Could use euclidean distance or Chebyshev distance otherwise
-                float d = dist[closestTile] + ManhattanDistance(tile, closestTile);
-
-                if (d < dist[tile])
+                if (tile != null)
                 {
-                    dist[tile] = d;
-                    prev[tile] = closestTile;
+                    // Using manhattan distance because we're only allowing orthogonal movement. Could use euclidean distance or Chebyshev distance otherwise
+                    float d = dist[closestTile] + CostToEnterTile(unit, tile);
+
+                    if (d < dist[tile])
+                    {
+                        dist[tile] = d;
+                        prev[tile] = closestTile;
+                    }
                 }
             }
         }
 
         // No possible path from source to target
-        if (prev[target] == null)
+        if (prev[target] == null || dist[target] > unit.movement)
         {
             return null;
         }
@@ -207,6 +219,25 @@ public class TileMap : MonoBehaviour
     {
         return ManhattanDistance(source.tileX, source.tileY, target.tileX, target.tileY);
     }
+
+    private int CostToEnterTile(Unit unit, Tile tile)
+    {
+        bool canMoveThrough = true;
+
+        if ((tile.occupyingUnit != null && tile.occupyingUnit.isEnemy != unit.isEnemy) || !tileTypes[tile.tileType].isTraversable)
+        {
+            canMoveThrough = false;
+        }
+
+        if (canMoveThrough)
+        {
+            return tileTypes[tile.tileType].traversalCost;
+        }
+        else
+        {
+            return 100000;
+        }
+    }
     #endregion
 
     public Vector3 GetWorldPosFromTileCoord(int tileX, int tileY)
@@ -226,9 +257,9 @@ public class TileMap : MonoBehaviour
             {
                 Tile source = tiles[UnitManager.Instance.selectedUnit.tileX, UnitManager.Instance.selectedUnit.tileY];
 
-                if (tile.occupyingUnit == null && ManhattanDistance(source, tile) <= UnitManager.Instance.selectedUnit.movement)
+                if (tileTypes[tile.tileType].isTraversable && tile.occupyingUnit == null && ManhattanDistance(source, tile) <= UnitManager.Instance.selectedUnit.movement)
                 {
-                    List<Tile> path = FindPath(source, tile);
+                    List<Tile> path = FindPath(UnitManager.Instance.selectedUnit, tile);
 
                     if (path != null)
                     {
@@ -245,8 +276,7 @@ public class TileMap : MonoBehaviour
         {
             foreach (Tile t in currentSelectedPath)
             {
-                int dist = ManhattanDistance(UnitManager.Instance.selectedUnit, t);
-                if (dist <= UnitManager.Instance.selectedUnit.movement && dist > 0 && t.occupyingUnit == null)
+                if (FindPath(UnitManager.Instance.selectedUnit, t) != null)
                 {
                     t.SetHighlight(Tile.HighlightState.Light);
                 }
@@ -272,25 +302,27 @@ public class TileMap : MonoBehaviour
 
     public void OnUnitDeselected(Unit unit)
     {
+        if (currentSelectedPath != null)
+        {
+            foreach (Tile t in currentSelectedPath)
+            {
+                t.SetHighlight(Tile.HighlightState.None);
+            }
+        }
         currentSelectedPath = null;
         SetHighlightInRangeOfUnit(unit, Tile.HighlightState.None);
     }
 
     public void SetHighlightInRangeOfUnit(Unit unit, Tile.HighlightState state)
     {
-        Tile source = tiles[unit.tileX, unit.tileY];
-
         // TODO: There's a better way of doing this
         foreach (Tile tile in tiles)
         {
             if (tile != null)
             {
-                if (tileTypes[tile.tileType].isTraversable && tile.occupyingUnit == null && ManhattanDistance(source, tile) <= unit.movement)
+                if (FindPath(unit, tile) != null)
                 {
-                    if (FindPath(source, tile) != null)
-                    {
-                        tile.SetHighlight(state);
-                    }
+                    tile.SetHighlight(state);
                 }
             }
         }

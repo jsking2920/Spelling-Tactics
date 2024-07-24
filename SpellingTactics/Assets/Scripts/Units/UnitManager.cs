@@ -13,6 +13,9 @@ public class UnitManager : MonoBehaviour
 
     public bool unitSelectable = true;
 
+    public List<Unit> friendlyUnits;
+    public List<Unit> enemyUnits;
+
     private void Awake()
     {
         Instance = this;
@@ -22,7 +25,10 @@ public class UnitManager : MonoBehaviour
     {
         for (int i = 0; i < map.unitSpawns.Length; i++)
         {
-            tileMap.tiles[map.unitSpawns[i].x, map.unitSpawns[i].y].occupyingUnit = SpawnUnit(map.unitPrefabs[i], map.unitSpawns[i].x, map.unitSpawns[i].y);
+            Unit newUnit = SpawnUnit(map.unitPrefabs[i], map.unitSpawns[i].x, map.unitSpawns[i].y);
+            tileMap.tiles[map.unitSpawns[i].x, map.unitSpawns[i].y].occupyingUnit = newUnit;
+            if (newUnit.isEnemy) enemyUnits.Add(newUnit);
+            else friendlyUnits.Add(newUnit);
         }
     }
 

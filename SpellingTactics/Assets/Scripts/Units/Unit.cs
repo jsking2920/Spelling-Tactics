@@ -9,6 +9,7 @@ public class Unit : MonoBehaviour
     [HideInInspector] public int tileX;
     [HideInInspector] public int tileY;
     public int movement = 5;
+    public bool isEnemy = false;
 
     [HideInInspector] public bool isSelected = false; // set by unit manager
 
