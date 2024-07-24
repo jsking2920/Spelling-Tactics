@@ -319,9 +319,9 @@ MeshCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 5
-  m_Convex: 0
+  m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 0}
 --- !u!1 &6891390320192493980
@@ -334,6 +334,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5667948509440176292}
   - component: {fileID: 5101382484254416048}
+  - component: {fileID: 989165981363693881}
   m_Layer: 0
   m_Name: GenericTile
   m_TagString: Untagged
@@ -373,3 +374,24 @@ MonoBehaviour:
   tileType: 0
   tileX: 0
   tileY: 0
+--- !u!65 &989165981363693881
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6891390320192493980}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 0.5, z: 1}
+  m_Center: {x: 0.5, y: 0.25, z: 0.5}

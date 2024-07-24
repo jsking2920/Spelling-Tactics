@@ -10,7 +10,7 @@ public class TileMap : MonoBehaviour
     // CSV file in Assets/Resources. Needs to be rectangular. Values should be ints that correspond to TileType enum
     public string mapFileName;
 
-    private Dictionary<TileType, TileTypeScriptableObject> tileTypes;
+    public Dictionary<TileType, TileTypeScriptableObject> tileTypes;
     private Tile[,] tiles;
 
     private void Start()
