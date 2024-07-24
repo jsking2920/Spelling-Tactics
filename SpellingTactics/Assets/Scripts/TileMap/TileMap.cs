@@ -1,9 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using UnityEngine;
-using static Unity.VisualScripting.Member;
 
 // Based on: https://www.youtube.com/watch?v=2xXLhbQnHV4
 public class TileMap : MonoBehaviour
