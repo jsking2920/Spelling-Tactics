@@ -472,27 +472,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5942ba1567ab1d4fb2bb76184ae9881, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tileTypes:
-  - name: Empty
-    tilePrefab: {fileID: 1377801872679740207, guid: 75359c2eb92146744b6dcd26bf83bf3e,
-      type: 3}
-    isTraversable: 0
-    traversalCost: 0
-  - name: Grass
-    tilePrefab: {fileID: 3087586141465897949, guid: 116e0e97605212040ba4770917b61e79,
-      type: 3}
-    isTraversable: 1
-    traversalCost: 1
-  - name: Mountain
-    tilePrefab: {fileID: 3217041985537707717, guid: a3be8bb7c1132d1459e1fdb1dbc9283d,
-      type: 3}
-    isTraversable: 0
-    traversalCost: 0
-  - name: Water
-    tilePrefab: {fileID: 468706646281304873, guid: 873ca2c0bf473de46b3801565e0511f7,
-      type: 3}
-    isTraversable: 0
-    traversalCost: 0
+  tileTypeObjects:
+  - {fileID: 11400000, guid: 96557a36eaaee37459f782dc33c98b30, type: 2}
+  - {fileID: 11400000, guid: 03fd41c2e0247a84799170bc67c3b879, type: 2}
+  - {fileID: 11400000, guid: ff757ffc25c971046a2cc06e3646e79d, type: 2}
+  mapFileName: Map
 --- !u!850595691 &2012217966
 LightingSettings:
   m_ObjectHideFlags: 0
