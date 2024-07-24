@@ -12,6 +12,10 @@ public class UIManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI infoPanelTextHeader;
     [SerializeField] private TextMeshProUGUI infoPanelTextContent;
 
+    [SerializeField] private GameObject selectedUnitTextHolder;
+    [SerializeField] private TextMeshProUGUI selectedUnitTextHeader;
+    [SerializeField] private TextMeshProUGUI selectedUnitTextContent;
+
     private void Awake()
     {
         Instance = this;
@@ -20,6 +24,19 @@ public class UIManager : MonoBehaviour
     private void Start()
     {
         ClearInfoPanel();
+        ClearSelectedUnitInfo();
+    }
+
+    public void SetSelectedUnitInfo(Unit unit)
+    {
+        selectedUnitTextHeader.text = unit.letter;
+        selectedUnitTextContent.text = unit.unitName + "\nMovement: " + unit.movement;
+        selectedUnitTextHolder.SetActive(true);
+    }
+
+    public void ClearSelectedUnitInfo()
+    {
+        selectedUnitTextHolder.SetActive(false);
     }
 
     public void SetInfoPanel(string header, string content = "")

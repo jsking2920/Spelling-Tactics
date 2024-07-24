@@ -1,33 +1,26 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
-public class Tile : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
+public class Tile : MonoBehaviour
 {
     public TileMap map;
     public TileType tileType;
     public int tileX;
     public int tileY;
+    public List<Tile> neighbors;
 
-    public void OnPointerClick(PointerEventData pointerEventData)
-    {
-        
-    }
+    [SerializeField] private GameObject lightHighlightObject;
+    [SerializeField] private GameObject darkHighlightObject;
 
-    public void OnPointerEnter(PointerEventData pointerEventData)
+    private void Start()
     {
-        
-    }
-
-    public void OnPointerExit(PointerEventData pointerEventData)
-    {
-        
+        SetHighlight(HighlightState.None);
     }
 
     private void OnMouseEnter()
     {
-        UIManager.Instance.SetInfoPanel(map.tileTypes[tileType].tileName, map.tileTypes[tileType].traversalCost.ToString());
+        UIManager.Instance.SetInfoPanel(map.tileTypes[tileType].tileName, "Traversal Cost: " + map.tileTypes[tileType].traversalCost.ToString() + "\nCoord: " + tileX + ", " + tileY);
     }
 
     private void OnMouseExit()
@@ -37,6 +30,32 @@ public class Tile : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
 
     private void OnMouseUpAsButton()
     {
-        print("here");
+        map.OnTileClicked(this);
+    }
+
+    public enum HighlightState
+    {
+        None,
+        Light,
+        Dark
+    }
+
+    public void SetHighlight(HighlightState state)
+    {
+        switch (state)
+        {
+            case HighlightState.None:
+                lightHighlightObject.SetActive(false);
+                darkHighlightObject.SetActive(false);
+                break;
+            case HighlightState.Light:
+                lightHighlightObject.SetActive(true);
+                darkHighlightObject.SetActive(false);
+                break;
+            case HighlightState.Dark:
+                lightHighlightObject.SetActive(false);
+                darkHighlightObject.SetActive(true);
+                break;
+        }
     }
 }
