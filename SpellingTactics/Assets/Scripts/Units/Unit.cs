@@ -6,15 +6,15 @@ public class Unit : MonoBehaviour
 {
     public string unitName = "Asp";
     public string letter = "A";
-    public int tileX;
-    public int tileY;
+    [HideInInspector] public int tileX;
+    [HideInInspector] public int tileY;
     public int movement = 5;
 
-    public bool isSelected = false; // set by unit manager
+    [HideInInspector] public bool isSelected = false; // set by unit manager
 
     private void OnMouseOver()
     {
-        UIManager.Instance.SetInfoPanel("unitName", "Movement: " + movement + "\nCoord: " + tileX + ", " + tileY);
+        UIManager.Instance.SetInfoPanel(unitName, "Movement: " + movement + "\nCoord: " + tileX + ", " + tileY);
     }
 
     private void OnMouseExit()

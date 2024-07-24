@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,7 +10,6 @@ public class UnitManager : MonoBehaviour
     [SerializeField] private TileMap tileMap;
 
     public Unit selectedUnit { get; private set; } = null;
-    [SerializeField] GameObject unitPrefab;
 
     public bool unitSelectable = true;
 
@@ -18,20 +18,28 @@ public class UnitManager : MonoBehaviour
         Instance = this;
     }
 
-    private void Start()
+    public void SpawnUnitsForMap(Map map)
     {
-        SpawnUnit(3, 6);
+        for (int i = 0; i < map.unitSpawns.Length; i++)
+        {
+            tileMap.tiles[map.unitSpawns[i].x, map.unitSpawns[i].y].occupyingUnit = SpawnUnit(map.unitPrefabs[i], map.unitSpawns[i].x, map.unitSpawns[i].y);
+        }
     }
 
-    private void SpawnUnit(int tileX, int tileY)
+    private Unit SpawnUnit(GameObject unitPrefab, int tileX, int tileY)
     {
         Unit newUnit = Instantiate(unitPrefab, tileMap.GetWorldPosFromTileCoord(tileX, tileY), Quaternion.identity, tileMap.unitParent).GetComponent<Unit>();
         newUnit.tileX = tileX;
         newUnit.tileY = tileY;
+        return newUnit;
     }
 
     public void OnUnitSelected(Unit unit)
     {
+        if (selectedUnit != null)
+        {
+            OnUnitDeselect();
+        }
         UIManager.Instance.SetSelectedUnitInfo(unit);
         tileMap.OnUnitSelected(unit);
         selectedUnit = unit;
@@ -54,11 +62,18 @@ public class UnitManager : MonoBehaviour
     {
         unitSelectable = false;
         OnUnitDeselect();
+
         Tile target = path[path.Count - 1];
+
         unit.transform.position = tileMap.GetWorldPosFromTileCoord(target.tileX, target.tileY);
+
+        path[0].occupyingUnit = null;
+        target.occupyingUnit = unit;
         unit.tileX = target.tileX;
         unit.tileY = target.tileY;
+
         yield return null;
+
         unitSelectable = true;
     }
 }

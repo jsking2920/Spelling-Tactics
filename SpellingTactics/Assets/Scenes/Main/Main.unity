@@ -1351,8 +1351,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tileMap: {fileID: 1321318374}
-  unitPrefab: {fileID: 6084077428611133066, guid: 6636c9a27655f2f46a3fd6ab4fdff73a,
-    type: 3}
+  unitSelectable: 1
 --- !u!4 &1192183766
 Transform:
   m_ObjectHideFlags: 0
@@ -1418,10 +1417,21 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 96557a36eaaee37459f782dc33c98b30, type: 2}
   - {fileID: 11400000, guid: 03fd41c2e0247a84799170bc67c3b879, type: 2}
   - {fileID: 11400000, guid: ff757ffc25c971046a2cc06e3646e79d, type: 2}
-  mapFileName: Map
+  - {fileID: 11400000, guid: 76eb24e537eea8c448aa3848bba9dda0, type: 2}
+  currentMap:
+    csvFileName: Map
+    unitPrefabs:
+    - {fileID: 421037197647439007, guid: 9d6c36a47b539564a9bd43f8b0a392ae, type: 3}
+    - {fileID: 7903147027724073656, guid: 6a0da1da459ec5d488b8c9320b308576, type: 3}
+    - {fileID: 6970830595861061672, guid: 629cd724664f6084ab44201954320b6f, type: 3}
+    - {fileID: 6970830595861061672, guid: 629cd724664f6084ab44201954320b6f, type: 3}
+    unitSpawns:
+    - {x: 2, y: 1}
+    - {x: 3, y: 1}
+    - {x: 7, y: 9}
+    - {x: 6, y: 4}
   tileParent: {fileID: 371499177}
   unitParent: {fileID: 212258354}
-  currentSelectedPath: []
 --- !u!1 &1332940188
 GameObject:
   m_ObjectHideFlags: 0

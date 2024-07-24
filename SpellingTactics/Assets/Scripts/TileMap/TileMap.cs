@@ -10,10 +10,10 @@ public class TileMap : MonoBehaviour
     // Array of all Tile Type SOs, only used to initialize the dictionary below
     [SerializeField] private TileTypeScriptableObject[] tileTypeObjects;
     // CSV file in Assets/Resources. Needs to be rectangular. Values should be ints that correspond to TileType enum
-    public string mapFileName;
+    [SerializeField] private Map currentMap;
 
     public Dictionary<TileType, TileTypeScriptableObject> tileTypes;
-    private Tile[,] tiles; // will contain null values for empty spaces in grid
+    [HideInInspector] public Tile[,] tiles; // will contain null values for empty spaces in grid
 
     [SerializeField] private Transform tileParent;
     public Transform unitParent;
@@ -25,6 +25,7 @@ public class TileMap : MonoBehaviour
         InitializeTileTypeDict();
         InstantiateMap();
         InitializeTileNeighbors();
+        UnitManager.Instance.SpawnUnitsForMap(currentMap);
     }
 
     #region Map Initialization
@@ -94,7 +95,7 @@ public class TileMap : MonoBehaviour
     {
         List<string[]> csvData = new List<string[]>();
         
-        TextAsset csv = Resources.Load<TextAsset>(mapFileName);
+        TextAsset csv = Resources.Load<TextAsset>(currentMap.csvFileName);
 
         string[] rows = csv.text.Split(new char[] { '\n' });
 
@@ -225,7 +226,7 @@ public class TileMap : MonoBehaviour
             {
                 Tile source = tiles[UnitManager.Instance.selectedUnit.tileX, UnitManager.Instance.selectedUnit.tileY];
 
-                if (ManhattanDistance(source, tile) <= UnitManager.Instance.selectedUnit.movement)
+                if (tile.occupyingUnit == null && ManhattanDistance(source, tile) <= UnitManager.Instance.selectedUnit.movement)
                 {
                     List<Tile> path = FindPath(source, tile);
 
@@ -245,7 +246,7 @@ public class TileMap : MonoBehaviour
             foreach (Tile t in currentSelectedPath)
             {
                 int dist = ManhattanDistance(UnitManager.Instance.selectedUnit, t);
-                if (dist <= UnitManager.Instance.selectedUnit.movement && dist > 0)
+                if (dist <= UnitManager.Instance.selectedUnit.movement && dist > 0 && t.occupyingUnit == null)
                 {
                     t.SetHighlight(Tile.HighlightState.Light);
                 }
@@ -284,12 +285,14 @@ public class TileMap : MonoBehaviour
         {
             if (tile != null)
             {
-                if (tileTypes[tile.tileType].isTraversable && ManhattanDistance(source, tile) <= unit.movement)
+                if (tileTypes[tile.tileType].isTraversable && tile.occupyingUnit == null && ManhattanDistance(source, tile) <= unit.movement)
                 {
-                    tile.SetHighlight(state);
+                    if (FindPath(source, tile) != null)
+                    {
+                        tile.SetHighlight(state);
+                    }
                 }
             }
         }
-        source.SetHighlight(Tile.HighlightState.None);
     }
 }

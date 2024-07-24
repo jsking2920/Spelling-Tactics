@@ -13,6 +13,8 @@ public class Tile : MonoBehaviour
     [SerializeField] private GameObject lightHighlightObject;
     [SerializeField] private GameObject darkHighlightObject;
 
+    public Unit occupyingUnit = null;
+
     private void Start()
     {
         SetHighlight(HighlightState.None);
