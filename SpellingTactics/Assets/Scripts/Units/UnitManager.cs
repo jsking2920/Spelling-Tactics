@@ -25,8 +25,14 @@ public class UnitManager : MonoBehaviour
     {
         for (int i = 0; i < map.unitSpawns.Length; i++)
         {
+            Tile spawnTile = tileMap.tiles[map.unitSpawns[i].x, map.unitSpawns[i].y];
+            if (spawnTile == null || !tileMap.tileTypes[spawnTile.tileType].isTraversable || spawnTile.occupyingUnit != null)
+            {
+                Debug.LogError("Bad spawn location!");
+            }
+
             Unit newUnit = SpawnUnit(map.unitPrefabs[i], map.unitSpawns[i].x, map.unitSpawns[i].y);
-            tileMap.tiles[map.unitSpawns[i].x, map.unitSpawns[i].y].occupyingUnit = newUnit;
+            spawnTile.occupyingUnit = newUnit;
             if (newUnit.isEnemy) enemyUnits.Add(newUnit);
             else friendlyUnits.Add(newUnit);
         }
