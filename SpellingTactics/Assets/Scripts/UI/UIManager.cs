@@ -23,6 +23,9 @@ public class UIManager : MonoBehaviour
 
     [SerializeField] private Button endTurnButton;
 
+    private bool helpPanelActive = false;
+    [SerializeField] private GameObject helpPanel;
+
     private void Awake()
     {
         Instance = this;
@@ -36,6 +39,8 @@ public class UIManager : MonoBehaviour
         endTurnButton.onClick.RemoveAllListeners();
         endTurnButton.onClick.AddListener(btn_NewRound);
         endTurnButton.interactable = false;
+
+        helpPanel.SetActive(false);
     }
 
     public void SetSelectedUnitInfo(Unit unit)
@@ -89,5 +94,11 @@ public class UIManager : MonoBehaviour
     public void btn_Restart()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    public void btn_Help()
+    {
+        helpPanel.SetActive(!helpPanelActive);
+        helpPanelActive = !helpPanelActive;
     }
 }
