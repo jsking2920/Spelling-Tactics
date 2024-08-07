@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class WordDictionary : MonoBehaviour
 {
-    public static WordDictionary instance;
+    public static WordDictionary Instance;
 
     private HashSet<string> words;
 
@@ -15,7 +15,7 @@ public class WordDictionary : MonoBehaviour
 
     private void Awake()
     {
-        instance = this;
+        Instance = this;
         Initialize();
     }
 

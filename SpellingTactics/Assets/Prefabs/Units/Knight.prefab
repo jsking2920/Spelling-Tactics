@@ -182,6 +182,16 @@ PrefabInstance:
       propertyPath: unitName
       value: Knight
       objectReference: {fileID: 0}
+    - target: {fileID: 3664903138573493551, guid: 6636c9a27655f2f46a3fd6ab4fdff73a,
+        type: 3}
+      propertyPath: baseAttack
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3664903138573493551, guid: 6636c9a27655f2f46a3fd6ab4fdff73a,
+        type: 3}
+      propertyPath: baseMovement
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 6084077428611133066, guid: 6636c9a27655f2f46a3fd6ab4fdff73a,
         type: 3}
       propertyPath: m_Name

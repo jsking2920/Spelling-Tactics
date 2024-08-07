@@ -12,6 +12,7 @@ public class Tile : MonoBehaviour
 
     [SerializeField] private GameObject lightHighlightObject;
     [SerializeField] private GameObject darkHighlightObject;
+    [SerializeField] private GameObject attackHighlightObject;
 
     public Unit occupyingUnit = null;
 
@@ -39,7 +40,8 @@ public class Tile : MonoBehaviour
     {
         None,
         Light,
-        Dark
+        Dark,
+        Attack
     }
 
     public void SetHighlight(HighlightState state)
@@ -49,14 +51,22 @@ public class Tile : MonoBehaviour
             case HighlightState.None:
                 lightHighlightObject.SetActive(false);
                 darkHighlightObject.SetActive(false);
+                attackHighlightObject.SetActive(false);
                 break;
             case HighlightState.Light:
                 lightHighlightObject.SetActive(true);
                 darkHighlightObject.SetActive(false);
+                attackHighlightObject.SetActive(false);
                 break;
             case HighlightState.Dark:
                 lightHighlightObject.SetActive(false);
                 darkHighlightObject.SetActive(true);
+                attackHighlightObject.SetActive(false);
+                break;
+            case HighlightState.Attack:
+                lightHighlightObject.SetActive(false);
+                darkHighlightObject.SetActive(false);
+                attackHighlightObject.SetActive(true);
                 break;
         }
     }

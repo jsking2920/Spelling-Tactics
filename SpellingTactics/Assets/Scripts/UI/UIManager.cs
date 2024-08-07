@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
@@ -16,6 +17,12 @@ public class UIManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI selectedUnitTextHeader;
     [SerializeField] private TextMeshProUGUI selectedUnitTextContent;
 
+    [SerializeField] private WordEntryField wordEntryField;
+
+    [SerializeField] private TextMeshProUGUI currentActiveWordText;
+
+    [SerializeField] private Button endTurnButton;
+
     private void Awake()
     {
         Instance = this;
@@ -25,6 +32,10 @@ public class UIManager : MonoBehaviour
     {
         ClearInfoPanel();
         ClearSelectedUnitInfo();
+
+        endTurnButton.onClick.RemoveAllListeners();
+        endTurnButton.onClick.AddListener(btn_NewRound);
+        endTurnButton.interactable = false;
     }
 
     public void SetSelectedUnitInfo(Unit unit)
@@ -49,6 +60,25 @@ public class UIManager : MonoBehaviour
     public void ClearInfoPanel()
     {
         infoPanelTextHolder.SetActive(false);
+    }
+
+    public void OnValidWordSubmitted(string word)
+    {
+        // Make all of these state changes into events that each component handles individually
+        GameManager.Instance.OnValidWordSubmitted(word);
+        endTurnButton.interactable = true;
+        currentActiveWordText.text = word;
+    }
+
+    public void btn_NewRound()
+    {
+        if (GameManager.Instance.state == GameState.PlayerActions)
+        {
+            wordEntryField.OnNewRound();
+            GameManager.Instance.OnNewRound();
+            endTurnButton.interactable = false;
+            currentActiveWordText.text = "";
+        }
     }
 
     public void btn_Quit()

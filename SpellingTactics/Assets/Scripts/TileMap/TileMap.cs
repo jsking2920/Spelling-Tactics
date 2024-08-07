@@ -202,17 +202,22 @@ public class TileMap : MonoBehaviour
         return path;
     }
 
-    private int ManhattanDistance(int x1, int y1, int x2, int y2)
+    public int ManhattanDistance(int x1, int y1, int x2, int y2)
     {
         return Mathf.Abs(x1 - x2) + Mathf.Abs(y1 - y2);
     }
 
-    private int ManhattanDistance(Tile source, Tile target)
+    public int ManhattanDistance(Tile source, Tile target)
     {
         return ManhattanDistance(source.tileX, source.tileY, target.tileX, target.tileY);
     }
 
-    private int ManhattanDistance(Unit source, Tile target)
+    public int ManhattanDistance(Unit source, Tile target)
+    {
+        return ManhattanDistance(source.tileX, source.tileY, target.tileX, target.tileY);
+    }
+
+    public int ManhattanDistance(Unit source, Unit target)
     {
         return ManhattanDistance(source.tileX, source.tileY, target.tileX, target.tileY);
     }
@@ -242,6 +247,19 @@ public class TileMap : MonoBehaviour
         return new Vector3(tileX, 0, tileY);
     }
 
+    public bool IsAdjacent(int x1, int y1, int x2, int y2)
+    {
+        if (x1 == x2 && Mathf.Abs(y1 - y2) == 1)
+        {
+            return true;
+        }
+        else if (y1 == y2 && Mathf.Abs(x1 - x2) == 1)
+        {
+            return true;
+        }
+        return false;
+    }
+
     public void OnTileClicked(Tile tile)
     {
         if (UnitManager.Instance.selectedUnit != null)
@@ -252,6 +270,8 @@ public class TileMap : MonoBehaviour
             }
             else
             {
+                if (UnitManager.Instance.selectedUnit.hasMoved) return;
+
                 Tile source = tiles[UnitManager.Instance.selectedUnit.tileX, UnitManager.Instance.selectedUnit.tileY];
 
                 if (tileTypes[tile.tileType].isTraversable && tile.occupyingUnit == null && ManhattanDistance(source, tile) <= UnitManager.Instance.selectedUnit.movement)
@@ -275,7 +295,14 @@ public class TileMap : MonoBehaviour
             {
                 if (FindPath(UnitManager.Instance.selectedUnit, t) != null)
                 {
-                    t.SetHighlight(Tile.HighlightState.Light);
+                    if (!UnitManager.Instance.selectedUnit.hasAttacked && ManhattanDistance(path[0], t) == 1)
+                    {
+                        t.SetHighlight(Tile.HighlightState.Attack);
+                    }
+                    else
+                    {
+                        t.SetHighlight(Tile.HighlightState.Light);
+                    }
                 }
                 else
                 {
@@ -294,7 +321,7 @@ public class TileMap : MonoBehaviour
 
     public void OnUnitSelected(Unit unit)
     {
-        SetHighlightInRangeOfUnit(unit, Tile.HighlightState.Light);
+        SetHighlightInRangeOfUnit(unit);
     }
 
     public void OnUnitDeselected(Unit unit)
@@ -307,20 +334,41 @@ public class TileMap : MonoBehaviour
             }
         }
         currentSelectedPath = null;
-        SetHighlightInRangeOfUnit(unit, Tile.HighlightState.None);
+        ClearTileHighlights();
     }
 
-    public void SetHighlightInRangeOfUnit(Unit unit, Tile.HighlightState state)
+    public void SetHighlightInRangeOfUnit(Unit unit)
     {
-        // TODO: There's a better way of doing this
+        if (!unit.hasMoved)
+        {
+            // TODO: There's a better way of doing this
+            foreach (Tile tile in tiles)
+            {
+                if (tile != null)
+                {
+                    if (FindPath(unit, tile) != null)
+                    {
+                        tile.SetHighlight(Tile.HighlightState.Light);
+                    }
+                }
+            }
+        }
+        if (!unit.hasAttacked)
+        {
+            tiles[unit.tileX - 1, unit.tileY]?.SetHighlight(Tile.HighlightState.Attack);
+            tiles[unit.tileX + 1, unit.tileY]?.SetHighlight(Tile.HighlightState.Attack);
+            tiles[unit.tileX, unit.tileY - 1]?.SetHighlight(Tile.HighlightState.Attack);
+            tiles[unit.tileX, unit.tileY + 1]?.SetHighlight(Tile.HighlightState.Attack);
+        }
+    }
+
+    public void ClearTileHighlights()
+    {
         foreach (Tile tile in tiles)
         {
             if (tile != null)
             {
-                if (FindPath(unit, tile) != null)
-                {
-                    tile.SetHighlight(state);
-                }
+                tile.SetHighlight(Tile.HighlightState.None);
             }
         }
     }
